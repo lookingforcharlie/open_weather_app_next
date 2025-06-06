@@ -144,7 +144,7 @@ export default function HistoryPage() {
   }, [])
 
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-lg flex-col items-center justify-start p-4">
+    <div className="mx-auto flex min-h-screen w-full max-w-2xl flex-col items-center justify-start p-4">
       <div className="mb-4 flex w-full items-center justify-between">
         <h1 className="text-2xl font-bold">Search History</h1>
         <Button
