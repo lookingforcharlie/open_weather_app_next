@@ -12,11 +12,38 @@ import {
 } from '../components/ui/card'
 import { WeatherData } from '../lib/types'
 
+// API configuration
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4750'
+
 export default function Home() {
   const [city, setCity] = useState<string>('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [data, setData] = useState<WeatherData | null>(null)
+
+  // Save search history to backend
+  const saveSearchHistory = async (cityName: string) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/search-history`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ cityName }),
+      })
+
+      if (!response.ok) {
+        console.error('Failed to save search history:', response.status)
+        return
+      }
+
+      const result = await response.json()
+      console.log('Search history saved:', result.data)
+    } catch (error) {
+      console.error('Error saving search history:', error)
+      // Don't show error to user - this is a background operation
+    }
+  }
 
   const handleClick = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -36,6 +63,9 @@ export default function Home() {
 
       console.log('Received:', result)
       setData(result)
+
+      // Save to search history after successful weather fetch
+      await saveSearchHistory(city.trim())
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
@@ -64,6 +94,9 @@ export default function Home() {
       <h1 className="text-4xl font-bold text-amber-500">Open Weather App</h1>
 
       <div className="w-full max-w-lg space-y-4">
+        <div className="mb-10 text-center text-sm text-gray-500">
+          The city you searched will be saved in history automatically
+        </div>
         <form onSubmit={handleClick} className="flex space-x-4">
           <input
             type="text"
