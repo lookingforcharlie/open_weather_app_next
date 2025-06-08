@@ -10,7 +10,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { useEffect, useState } from 'react'
-import { toast } from 'sonner' // or your preferred toast library
+import { Toaster, toast } from 'sonner' // or your preferred toast library
 
 // TypeScript interfaces for type safety
 interface SearchHistory {
@@ -160,10 +160,11 @@ export default function HistoryPage() {
       </Table>
 
       {searchHistory.length > 0 && (
-        <p className="text-muted-foreground mt-4 text-sm">
+        <p className="text-muted-foreground mt-4 w-full text-right text-sm">
           Total searches: {searchHistory.length}
         </p>
       )}
+      <Toaster />
     </div>
   )
 }
