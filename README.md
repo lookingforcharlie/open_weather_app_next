@@ -35,3 +35,7 @@
   ```
 
 - Get local date
+
+## [Rate Limiting in Next.js using Upstash](https://upstash.com/blog/nextjs-ratelimiting)
+
+- [Upstash Rate Limiter in GitHub](https://github.com/upstash/ratelimit-js)
