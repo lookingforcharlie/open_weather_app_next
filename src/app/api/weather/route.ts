@@ -1,8 +1,25 @@
 // src/app/api/weather/route.ts
 import { NextRequest, NextResponse } from 'next/server'
+import { ratelimit } from '../../../lib/rateLimiter'
 import { WeatherData } from '../../../lib/types'
 
 export async function GET(request: NextRequest) {
+  // Handle rate limiting
+  // Without split, you will get multiple ips, and only the first one the real ip, the rest are proxies
+  // If do not use split, user can abuse the rate limiter by sending requests behind different proxies
+  const ip = (request.headers.get('x-forwarded-for') ?? '127.0.0.1')
+    .split(',')[0]
+    .trim()
+  const { success } = await ratelimit.limit(ip)
+
+  // when use remaining === 0, but feel like exceeded limit more quickly
+  if (!success) {
+    return NextResponse.json(
+      { error: 'You are sending too many requests. Please try again later.' },
+      { status: 429 }
+    )
+  }
+
   const { searchParams } = new URL(request.url)
   const city = searchParams.get('city')
 
