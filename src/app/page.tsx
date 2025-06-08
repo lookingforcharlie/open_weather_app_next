@@ -1,5 +1,6 @@
 'use client'
 
+import { Droplet, FanIcon, PersonStanding } from 'lucide-react'
 import Image from 'next/image'
 import { useState } from 'react'
 import Button from '../components/Button'
@@ -91,7 +92,7 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-items-center gap-12 p-8 pb-20">
-      <h1 className="text-4xl font-bold text-amber-500">Open Weather App</h1>
+      <h1 className="text-4xl font-bold text-amber-600">Open Weather App</h1>
 
       <div className="w-full max-w-lg space-y-4">
         <div className="mb-10 text-center text-sm text-gray-500">
@@ -119,7 +120,7 @@ export default function Home() {
 
       <div className="mt-8 flex min-h-[200px] w-full max-w-lg flex-col items-center justify-center">
         {data && (
-          <Card className="w-full max-w-lg bg-white/10 p-6 shadow-lg backdrop-blur-sm">
+          <Card className="animate-in fade-in slide-in-from-bottom-4 w-full max-w-lg bg-white/10 p-6 shadow-lg backdrop-blur-sm duration-500">
             <CardHeader>
               <div className="flex items-baseline justify-between">
                 <CardTitle className="text-2xl">{data.name}</CardTitle>
@@ -144,16 +145,19 @@ export default function Home() {
             <CardContent>
               <div className="flex items-center justify-between">
                 <div className="flex flex-col items-center">
+                  <Droplet className="mb-2 h-6 w-6 text-blue-600" />
                   <div className="text-sm text-gray-500">Humidity</div>
                   <div className="text-lg font-bold">{data.main.humidity}%</div>
                 </div>
                 <div className="flex flex-col items-center">
+                  <FanIcon className="mb-2 h-6 w-6 text-orange-600" />
                   <div className="text-sm text-gray-500">Wind</div>
                   <div className="text-lg font-bold">
                     {data.wind.speed} km/h
                   </div>
                 </div>
                 <div className="flex flex-col items-center">
+                  <PersonStanding className="mb-2 h-6 w-6 text-teal-600" />
                   <div className="text-sm text-gray-500">Feels like</div>
                   <div className="text-lg font-bold">
                     {Math.round(data.main.feels_like)}°C
