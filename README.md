@@ -39,3 +39,10 @@
 ## [Rate Limiting in Next.js using Upstash](https://upstash.com/blog/nextjs-ratelimiting)
 
 - [Upstash Rate Limiter in GitHub](https://github.com/upstash/ratelimit-js)
+- Implemented Rate Limiter on calling Open Weather API
+
+## Exponential/Backoff strategy for handling potential connection issues
+
+- [exponential-backoff npm package](https://www.npmjs.com/package/exponential-backoff)
+
+- Implemented exponential backoff on fetch searching history function

@@ -9,8 +9,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { backOff } from 'exponential-backoff'
 import { useEffect, useState } from 'react'
 import { Toaster, toast } from 'sonner' // or your preferred toast library
+import { BACKOFF_OPTIONS_CONFIG } from '../../lib/backOffOptions'
 
 // TypeScript interfaces for type safety
 interface SearchHistory {
@@ -33,18 +35,21 @@ export default function HistoryPage() {
   const [loading, setLoading] = useState(true)
   const [deletingId, setDeletingId] = useState<number | null>(null)
 
-  // Fetch search history from backend
+  // Wrap fetch history function with exponential backoff
   const fetchSearchHistory = async () => {
     try {
       setLoading(true)
-      const response = await fetch(`${API_BASE_URL}/api/search-history`)
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
+      const data = await backOff<ApiResponse>(async () => {
+        const response = await fetch(`${API_BASE_URL}/api/search-history`)
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        return response.json()
 
-      const data: ApiResponse = await response.json()
-      console.log('data', data)
+        // console.log('Simulating always failure for testing')
+        // throw new Error('Simulated API failure')
+      }, BACKOFF_OPTIONS_CONFIG)
 
       if (data.success) {
         setSearchHistory(data.data)
@@ -52,8 +57,10 @@ export default function HistoryPage() {
         throw new Error('Failed to fetch search history')
       }
     } catch (error) {
-      console.error('Error fetching search history:', error)
-      toast.error('Failed to load search history')
+      console.error('All retry attempts failed:', error)
+      toast.error(
+        'The server is experiencing a high influx of requests. Please try again later.'
+      )
     } finally {
       setLoading(false)
     }
