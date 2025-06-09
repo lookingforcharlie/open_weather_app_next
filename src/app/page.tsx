@@ -1,8 +1,9 @@
 'use client'
 
-import { Droplet, FanIcon, PersonStanding } from 'lucide-react'
+import { City, type ICity } from 'country-state-city'
+import { ChevronsUpDown, Droplet, FanIcon, PersonStanding } from 'lucide-react'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Button from '../components/Button'
 import {
   Card,
@@ -21,6 +22,22 @@ export default function Home() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [data, setData] = useState<WeatherData | null>(null)
+  const [showDropdown, setShowDropdown] = useState(false)
+
+  const allCities: ICity[] = City.getAllCities()
+
+  // Filter cities based on input and limit to 20 items, or show first 50 when city is empty
+  // Behavior can be changed to varied requirement
+  const filteredCities =
+    city === ''
+      ? allCities.slice(0, 50)
+      : allCities
+          .filter((c) => c.name.toLowerCase().startsWith(city.toLowerCase()))
+          .slice(0, 20)
+
+  const toggleDropdown = () => {
+    setShowDropdown(!showDropdown)
+  }
 
   // Save search history to backend
   const saveSearchHistory = async (cityName: string) => {
@@ -48,7 +65,9 @@ export default function Home() {
 
   const handleClick = async (e: React.FormEvent) => {
     e.preventDefault()
+    setCity('')
     setData(null) // Clear data for new search
+    setShowDropdown(false) // Hide dropdown when search starts
     if (!city.trim()) return
 
     setLoading(true)
@@ -75,11 +94,32 @@ export default function Home() {
   }
 
   const handleCityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCity(e.target.value)
+    const value = e.target.value
+    setCity(value)
+    // Only show dropdown on typing if there's input
+    setShowDropdown(value.length > 0)
     setError(null) // Clear error when user types
   }
 
-  // 🎯 Helper function to format the local date
+  const handleCitySelect = (selectedCity: string) => {
+    setCity(selectedCity)
+    setShowDropdown(false) // Hide dropdown when city is selected
+  }
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement
+      if (!target.closest('.city-dropdown-container')) {
+        setShowDropdown(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  // Helper function to format the local date
   const formatLocalDate = (isoString: string) => {
     const date = new Date(isoString)
     return date.toLocaleString('en-US', {
@@ -99,14 +139,53 @@ export default function Home() {
           The city you searched will be saved in history automatically
         </div>
         <form onSubmit={handleClick} className="flex space-x-4">
-          <input
-            type="text"
-            placeholder="Enter city name"
-            value={city}
-            onChange={handleCityChange}
-            className="w-2xl rounded-md border px-4 py-2"
-            disabled={loading}
-          />
+          <div className="city-dropdown-container relative w-full">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Enter city name"
+                value={city}
+                onChange={handleCityChange}
+                className="w-full rounded-md border px-4 py-2 pr-10"
+                disabled={loading}
+              />
+              <button
+                type="button"
+                onClick={toggleDropdown}
+                className="absolute top-1/2 right-2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                disabled={loading}
+              >
+                <ChevronsUpDown className="h-5 w-5" />
+              </button>
+            </div>
+            {showDropdown && (
+              <div className="absolute z-10 mt-1 w-full rounded-md border bg-white shadow-lg">
+                <div className="max-h-[300px] overflow-auto">
+                  {filteredCities.length > 0 ? (
+                    filteredCities.map((city) => (
+                      <div
+                        key={`${city.name}-${city.countryCode}-${city.stateCode}`}
+                        className="flex cursor-pointer items-center justify-between px-4 py-2 hover:bg-gray-100"
+                        onClick={() => handleCitySelect(city.name)}
+                      >
+                        <div className="font-medium">{city.name}</div>
+                        <div className="text-sm text-gray-500">
+                          {city.countryCode}
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div
+                      key="no-cities-found"
+                      className="px-4 py-2 text-sm text-gray-500"
+                    >
+                      No cities found
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
           <Button
             type="submit"
             disabled={loading || !city.trim()}
