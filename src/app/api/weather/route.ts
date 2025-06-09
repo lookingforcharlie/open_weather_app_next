@@ -3,6 +3,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { ratelimit } from '../../../lib/rateLimiter'
 import { WeatherData } from '../../../lib/types'
 
+// API key for OpenWeatherMap
+const API_KEY = process.env.OPENWEATHER_API_KEY
+
 export async function GET(request: NextRequest) {
   // Handle rate limiting
   // Without split, you will get multiple ips, and only the first one the real ip, the rest are proxies
@@ -22,8 +25,6 @@ export async function GET(request: NextRequest) {
 
   const { searchParams } = new URL(request.url)
   const city = searchParams.get('city')
-
-  const API_KEY = process.env.OPENWEATHER_API_KEY
 
   if (!API_KEY) {
     return NextResponse.json(
