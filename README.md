@@ -1,4 +1,4 @@
-# Open Weather App: Search city temperature
+# Open Weather App Next.JS: Search city temperature
 
 [Page Url](https://open-weather-app-next.vercel.app/)
 
@@ -80,3 +80,9 @@
 - [exponential-backoff npm package](https://www.npmjs.com/package/exponential-backoff)
 
 - Implemented exponential backoff on fetch searching history function
+
+## CI/CD with Vercel
+
+### Deployment Process
+
+- **Automatic Deployments**: The application is automatically deployed to Vercel when changes are pushed to the main branch
