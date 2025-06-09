@@ -14,7 +14,6 @@ import { useEffect, useState } from 'react'
 import { Toaster, toast } from 'sonner' // or your preferred toast library
 import { BACKOFF_OPTIONS_CONFIG } from '../../lib/backOffOptions'
 
-// TypeScript interfaces for type safety
 interface SearchHistory {
   id: number
   cityName: string
@@ -27,7 +26,7 @@ interface ApiResponse {
   count: number
 }
 
-// API configuration
+// Express backend base url
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4750'
 
 export default function HistoryPage() {

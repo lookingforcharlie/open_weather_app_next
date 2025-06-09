@@ -14,7 +14,7 @@ import {
 } from '../components/ui/card'
 import { WeatherData } from '../lib/types'
 
-// API configuration
+// Express Backend base url
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4750'
 
 export default function Home() {
