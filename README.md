@@ -1,40 +1,74 @@
-# Open Weather App NextJS
+# Open Weather App: Search city temperature
 
-## Project Set up
+[Page Url](https://open-weather-app-next.vercel.app/)
 
-- Add Prettier for formatting
+- Next.js: Frontend and create API route to call Open Weather API to safeguard API Key
+- Use Upstash/Redis to implement rate limiting when calling Open Weather API from frontend
+- Express: Backend JSON Restful API with CRUD endpoints
+- Turso/Sqlite: Backend connects Turso to save user searching history
+- Next.js calls Express to render search history on page
+- Next.js call Express endpoint to delete search history
+- Next.js implements Exponential/Backoff strategy for handling potential connection issues when calling Express for getting search history
+  ![app diagram](./public/images/app_diagram.png 'app screenshot')
 
-- Add settings.json in .vscode to make workplace consistent
+## Next.JS Project Stack
 
-- Create server side api routes for call open weather api, to safeguard the api key
-- Create reusable Button component
-- Introduce Shadcn UI for UI library
+### Core Technologies
 
-- API return value filtered by api and fully typed
+- **Next.js 15.3.3**: React framework for production
+- **React 19**: Frontend library
+- **TypeScript**: Type-safe JavaScript
+- **TailwindCSS**: Utility-first CSS framework
 
-  ```
-  {
-    "name": "Tokoyo",
-    "main": {
-      "temp": 20.69,
-      "humidity": 83,
-      "feels_like": 20.98
-    },
-    "weather": [
-      {
-        "main": "Clouds",
-        "description": "few clouds",
-        "icon": "02n"
-      }
-    ],
-    "wind": {
-      "speed": 0.33
-    },
-    localDate: new Date((fullData.dt + fullData.timezone) * 1000).toISOString()
-  }
-  ```
+### UI Components & Styling
 
-- Get local date
+- **Shadcn UI**: Component library built on Radix UI
+- **Lucide React**: Icon library
+- **Sonner**: Toast notifications
+
+### Development Tools
+
+- **ESLint**: Code linting
+- **Prettier**: Code formatting
+- **VS Code Integration**
+  - Custom `.vscode/settings.json` for consistent workspace settings
+
+### API & Data Management
+
+- **Upstash Redis**: Rate limiting implementation
+- **Exponential Backoff**: Retry strategy for API calls
+- **Country State City**: Location data utilities
+
+### Project Features
+
+1. **API Routes**
+
+   - Server-side API routes for OpenWeather API integration
+   - API key protection through backend routes
+   - Type-safe API responses
+
+2. **Rate Limiting**
+
+   - Implemented using Upstash Redis
+   - Protects OpenWeather API endpoints
+   - Configurable rate limits
+
+3. **Error Handling**
+
+   - Exponential backoff strategy for API retries
+   - Graceful error handling for API failures
+   - Toast notifications for user feedback
+
+4. **Component Architecture**
+
+   - Reusable Button component
+   - Modular UI components
+   - Responsive design with Tailwind CSS
+
+5. **Type Safety**
+   - Full TypeScript implementation
+   - Type definitions for all API responses
+   - Strict type checking enabled
 
 ## [Rate Limiting in Next.js using Upstash](https://upstash.com/blog/nextjs-ratelimiting)
 
